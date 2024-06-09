@@ -4,7 +4,7 @@
       type="checkbox"
       data-cy="card-checkbox"
       :checked="card.completed"
-      @click.stop="patchCard(card, { completed: !card.completed })"
+      @click.stop="putCard(card, { completed: !card.completed })"
     >
   </label>
 </template>
@@ -19,7 +19,7 @@ defineProps({
     type: Object as PropType<Card>,
   },
 });
-const { patchCard } = useStore();
+const { putCard } = useStore();
 </script>
 
 <style lang="postcss" scoped>

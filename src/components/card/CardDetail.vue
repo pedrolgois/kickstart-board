@@ -131,14 +131,13 @@
             </div>
             <div class="col-span-4 font-bold ">
               <span>{{ activeCard.image.split('&value=')[0].replace(`name=`, '') }}</span>
-              <a
+              <div
                 class="block font-normal underline cursor-pointer"
-                data-cy="image-delete"
-                :href="'/backend' + activeCard.image"
-                download
+                data-cy="image-download"
+                @click="downloadFile(activeCard)"
               >
                 <Download class="inline-block mb-1 w-4" />Download
-              </a>
+              </div>
               <div
                 class="block font-normal underline cursor-pointer"
                 data-cy="image-delete"
@@ -239,8 +238,15 @@ const clickAwayDate = () => {
   showDate.value = false;
 };
 
-function test(event: any){
-console.log(activeCard.value.description)
+function downloadFile(card: Card){
+  if(card.image){
+    const blobUrl = card.image.split('&value=')[1];
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = card.image.split('&value=')[0].replace('name=', '');
+    link.click();
+    document.body.removeChild(link);
+  }
 }
 
 const updateDate = (data: string) => {
