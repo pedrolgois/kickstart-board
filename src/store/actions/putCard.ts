@@ -3,6 +3,7 @@ import List from '@/typings/list';
 import { kickStartBoardAPI } from '..';
 
 export const putCard = async function (this: any, card: Card, changes: Partial<Card>) {
+  console.log(card, changes)
   const { id } = card;
   await kickStartBoardAPI.put(`/api/cards/${id}`, changes).then((res) => {
     let listIndex = this.lists.findIndex((list: List) => list.id === card.listId);

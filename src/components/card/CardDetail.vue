@@ -23,7 +23,7 @@
               selectInput($event);
               cardNameInputActive = true;
             "
-            @change="patchCard(activeCard, { name: activeCard.name })"
+            @change="putCard(activeCard, { name: activeCard.name })"
             @keyup.enter="
               blurInput($event);
               cardNameInputActive = false;
@@ -107,23 +107,13 @@
           <h1 class="inline-block mb-4 text-lg font-semibold text-black">
             Description
           </h1>
-          <textarea
-            v-model="activeCard.description"
-            class="p-3 w-full h-36 resize-none"
-            data-cy="card-description"
-            @focus="
-              selectInput($event);
-              descriptionInputActive = true;
-            "
-            @change="patchCard(activeCard, { description: activeCard.description })"
-            @keydown.enter="
-              blurInput($event);
-              descriptionInputActive = false;
-            "
-            @keyup.esc="
-              blurInput($event);
-              descriptionInputActive = false;
-            "
+          <QuillEditor
+            v-model:content="activeCard.description"
+            content-type="html"
+            theme="snow"
+            data-cy="quill"
+            class="quill"
+            @blur="putCard(activeCard, { description: activeCard.description })"
           />
         </div>
         <div class="mb-4 ml-9">
@@ -152,7 +142,7 @@
               <div
                 class="block font-normal underline cursor-pointer"
                 data-cy="image-delete"
-                @click="patchCard(activeCard, { image: null })"
+                @click="putCard(activeCard, { image: null })"
               >
                 <Cross class="inline-block mb-1 w-4" />Delete
               </div>
@@ -228,9 +218,12 @@ import Trash from '@/assets/icons/trash.svg';
 import moment from 'moment';
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
+import { QuillEditor } from '@vueup/vue-quill'
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+import '@vueup/vue-quill/dist/vue-quill.bubble.css';
 
 const router = useRouter();
-const { showNotification, showCardModule, patchCard, deleteCard } = useStore();
+const { showNotification, showCardModule, putCard, deleteCard } = useStore();
 const { lists, activeCard } = storeToRefs(useStore());
 const cardListName = lists.value.find((l: List) => l.id === activeCard.value.listId)!['name'];
 
@@ -246,9 +239,13 @@ const clickAwayDate = () => {
   showDate.value = false;
 };
 
+function test(event: any){
+console.log(activeCard.value.description)
+}
+
 const updateDate = (data: string) => {
   const formattedDate = moment(data).format('YYYY-MM-DD');
-  patchCard(activeCard.value, { deadline: formattedDate });
+  putCard(activeCard.value, { deadline: formattedDate });
   showDate.value = false;
 };
 
@@ -263,3 +260,5 @@ onMounted(() => {
   router.push(`${router.currentRoute.value.path}?card=${activeCard.value.id}`);
 });
 </script>
+
+

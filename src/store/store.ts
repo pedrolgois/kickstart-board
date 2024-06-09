@@ -99,7 +99,7 @@ export const useStore = defineStore({
 
     // card actions
     createCard,
-    patchCard: putCard,
+    putCard,
     deleteCard,
     uploadFile,
 
