@@ -1,8 +1,8 @@
 import Board from '@/typings/board';
-import axios from 'axios';
+import { kickStartBoardAPI } from '..';
 
 export const createList = async function (this: any, boardId: Board['id'], name: string) {
-  axios
+  kickStartBoardAPI
     .post('/api/lists', { boardId, name, order: this.lists.length })
     .then(({ data }) => {
       data.cards = [];

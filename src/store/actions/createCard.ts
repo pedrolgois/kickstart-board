@@ -1,13 +1,13 @@
 import Card from '@/typings/card';
 import List from '@/typings/list';
-import axios from 'axios';
+import { kickStartBoardAPI } from '..';
 
 export const createCard = async function (this: any, card: Partial<Card>) {
   const listIndex = this.lists.findIndex((list: List) => list.id === card.listId);
   const cardsInList = this.lists[listIndex].cards;
   const order = cardsInList.length;
 
-  axios
+  kickStartBoardAPI
     .post('/api/cards', { order, ...card })
     .then(({ data }) => {
       this.lists[listIndex].cards.push(data);

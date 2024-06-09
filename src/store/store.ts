@@ -2,11 +2,11 @@ import { defineStore } from 'pinia';
 import { createBoard } from './actions/createBoard';
 import { getBoardDetail } from './actions/getBoardDetail';
 import { getBoardList } from './actions/getBoardList';
-import { patchCard } from './actions/patchCard';
+import { putCard } from './actions/putCard';
 import { uploadFile } from './actions/uploadFile';
 import { deleteCard } from './actions/deleteCard';
 import { deleteList } from './actions/deleteList';
-import { patchList } from './actions/patchList';
+import { putList } from './actions/putList';
 import { createCard } from './actions/createCard';
 import { createList } from './actions/createList';
 import { sortLists } from './actions/sortLists';
@@ -21,7 +21,7 @@ import { resetBoards } from './actions/resetBoards';
 import { resetLists } from './actions/resetLists';
 import { resetCards } from './actions/resetCards';
 import { resetUsers } from './actions/resetUsers';
-import { patchBoard } from './actions/patchBoard';
+import { putBoard } from './actions/putBoard';
 import { toggleTools } from './actions/toggleTools';
 import { toggleSearch } from './actions/toggleSearch';
 import { searchCard } from './actions/searchCard';
@@ -88,18 +88,18 @@ export const useStore = defineStore({
     createBoard,
     getBoardDetail,
     getBoardList,
-    patchBoard,
+    patchBoard: putBoard,
     deleteBoard,
 
     // list actions
     createList,
     deleteList,
-    patchList,
+    patchList: putList,
     sortLists,
 
     // card actions
     createCard,
-    patchCard,
+    patchCard: putCard,
     deleteCard,
     uploadFile,
 

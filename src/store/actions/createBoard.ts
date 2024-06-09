@@ -1,11 +1,11 @@
 import Board from '@/typings/board';
-import axios from 'axios';
+import { kickStartBoardAPI } from '..';
 
 export const createBoard = async function (this: any, name: Board['name']) {
   if (!name) {
     return;
   }
-  const data = await axios
+  const data = await kickStartBoardAPI
     .post('/api/boards', { name })
     .then(({ data }) => {
       this.redirectBoardId = data.id;

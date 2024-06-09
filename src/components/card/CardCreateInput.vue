@@ -62,6 +62,7 @@ const addCard = () => {
     boardId: board.value.id,
     listId: props.list.id,
     name: cardTitle.value,
+    image: '',
   });
   cardTitle.value = '';
 };

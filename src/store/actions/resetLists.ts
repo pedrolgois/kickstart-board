@@ -1,7 +1,7 @@
-import axios from 'axios';
+import { kickStartBoardAPI } from '..';
 
 export const resetLists = async function (this: any) {
-  await axios.delete('/api/lists');
+  await kickStartBoardAPI.delete('/api/lists');
   this.activeCard = {};
   this.cardModule = false;
   this.lists = [];

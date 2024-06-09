@@ -137,10 +137,10 @@
             data-cy="image-attachment"
           >
             <div class="col-span-2 row-span-2">
-              <img :src="'/backend' + activeCard.image">
+              <img :src="activeCard.image.split('&value=')[1]">
             </div>
             <div class="col-span-4 font-bold ">
-              <span>{{ activeCard.image.replace(`/data/uploaded/${activeCard.id}_`, '') }}</span>
+              <span>{{ activeCard.image.split('&value=')[0].replace(`name=`, '') }}</span>
               <a
                 class="block font-normal underline cursor-pointer"
                 data-cy="image-delete"

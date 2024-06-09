@@ -1,7 +1,7 @@
-import axios from 'axios';
+import { kickStartBoardAPI } from '..';
 
 export const resetBoards = async function (this: any) {
-  axios
+  kickStartBoardAPI
     .delete('/api/boards')
     .then(() => {
       this.activeCard = {};
