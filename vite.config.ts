@@ -23,21 +23,21 @@ export default defineConfig({
       include: 'src/*',
       cypress: true
     }),
-    createServer(),
+    // createServer(),
     tsconfigPaths({ extensions: ['.ts', '.d.ts'] })
   ],
-  server: {
-    port: APP,
-    proxy: {
-      '^/api/.*': {
-        changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, ''),
-        target: `http://localhost:${SERVER}`
-      },
-      '^/socket.io/.*': {
-        changeOrigin: true,
-        target: `http://localhost:${SERVER}`,
-      }
-    }
-  }
+  // server: {
+  //   port: APP,
+  //   proxy: {
+  //     '^/api/.*': {
+  //       changeOrigin: true,
+  //       rewrite: path => path.replace(/^\/api/, ''),
+  //       target: `http://localhost:${SERVER}`
+  //     },
+  //     '^/socket.io/.*': {
+  //       changeOrigin: true,
+  //       target: `http://localhost:${SERVER}`,
+  //     }
+  //   }
+  // }
 });
