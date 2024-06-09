@@ -1,22 +1,24 @@
 <template>
   <div
-    class="flex fixed top-0 left-0 z-40 justify-center items-center w-full h-full bg-backdrop"
+    class="flex fixed top-0 left-0 z-40 justify-center items-center p-4 w-full h-full bg-backdrop"
     data-cy="card-detail-backdrop"
     @click.self="
       showCardModule(activeCard.id, false);
       router.push(router.currentRoute.value.path);
     "
   >
-    <div class="bg-gray2" data-cy="card-detail">
-      <div>
+    <div
+      class="flex flex-col-reverse gap-4 p-4 pb-0 w-full max-w-[700px] bg-gray2 sm:flex-row sm:p-8"
+      data-cy="card-detail"
+    >
+      <div class="w-full">
         <div class="mb-4 ml-9">
-          <div class="inline-block">
-            <Board />
-          </div>
+          <Board class="inline-block mr-3 ml-[-2rem] w-5" />
           <input
             v-model="activeCard.name"
             v-click-away="clickAwayCardName"
             data-cy="card-detail-title"
+            class="mb-2 text-base font-semibold leading-4 text-black bg-transparent focus:bg-white hover:bg-opacity-30 board-title"
             @focus="
               selectInput($event);
               cardNameInputActive = true;
@@ -30,23 +32,35 @@
               blurInput($event);
               cardNameInputActive = false;
             "
-          />
-          <h2>
-            in list <span class="underline" data-cy="card-list-name">{{ cardListName }}</span>
+          >
+          <h2 class="text-sm text-gray9">
+            in list <span
+              class="underline"
+              data-cy="card-list-name"
+            >{{ cardListName }}</span>
           </h2>
         </div>
         <div class="mb-4 ml-9">
-          <h2>DUE DATE</h2>
-          <div>
+          <h2 class="text-sm text-gray9">
+            DUE DATE
+          </h2>
+          <div class="flex gap-1 mt-1">
             <Checkbox :card="activeCard" />
             <h2>
-              {{ new Date(activeCard.deadline).toDateString() }}
-              <div v-show="activeCard.completed">COMPLETED</div>
-              <button data-cy="calendar-dropdown" @click="showDate = true">
+              <button
+                data-cy="calendar-dropdown"
+                class="py-1 px-4 bg-gray3 hover:bg-gray5"
+                @click="showDate = true"
+              >
+                {{ new Date(activeCard.deadline).toDateString() }}
                 <Downarrow class="inline-block py-2 pl-2 w-5 text-gray-800 cursor-pointer fill-current stroke-current" />
               </button>
             </h2>
-            <div v-if="showDate" class="absolute">
+
+            <div
+              v-if="showDate"
+              class="absolute"
+            >
               <Datepicker
                 v-model="date"
                 v-click-away="clickAwayDate"
@@ -84,12 +98,15 @@
               </Datepicker>
             </div>
           </div>
+          <div v-show="activeCard.completed">
+            COMPLETED
+          </div>
         </div>
         <div class="mb-4 ml-9">
-          <div class="inline-block">
-            <Description />
-          </div>
-          <h1 class="inline-block mb-4 text-lg font-semibold text-black">Description</h1>
+          <Description class="inline-block mr-3 ml-[-2rem] w-5" />
+          <h1 class="inline-block mb-4 text-lg font-semibold text-black">
+            Description
+          </h1>
           <textarea
             v-model="activeCard.description"
             class="p-3 w-full h-36 resize-none"
@@ -110,28 +127,44 @@
           />
         </div>
         <div class="mb-4 ml-9">
-          <div class="inline-block">
-            <Attachment />
-          </div>
-          <h1 class="inline-block mb-4 text-lg font-semibold text-black">Image</h1>
-          <div v-if="activeCard.image" class="grid grid-cols-6 gap-x-4" data-cy="image-attachment">
+          <Attachment class="inline-block mr-3 ml-[-2rem] w-5" />
+          <h1 class="inline-block mb-4 text-lg font-semibold text-black">
+            Image
+          </h1>
+          <div
+            v-if="activeCard.image"
+            class="grid grid-cols-6 gap-x-4 items-center p-4 h-40 border-4 border-gray-400 border-dashed"
+            data-cy="image-attachment"
+          >
             <div class="col-span-2 row-span-2">
-              <img :src="'/backend' + activeCard.image" />
+              <img :src="'/backend' + activeCard.image">
             </div>
-            <div class="col-span-4 font-bold">
-              {{ activeCard.image.replace(`/data/uploaded/${activeCard.id}_`, '') }}
-              <a class="block font-normal underline cursor-pointer" data-cy="image-delete" :href="'/backend' + activeCard.image" download>
+            <div class="col-span-4 font-bold ">
+              <span>{{ activeCard.image.replace(`/data/uploaded/${activeCard.id}_`, '') }}</span>
+              <a
+                class="block font-normal underline cursor-pointer"
+                data-cy="image-delete"
+                :href="'/backend' + activeCard.image"
+                download
+              >
                 <Download class="inline-block mb-1 w-4" />Download
               </a>
-              <div class="block font-normal underline cursor-pointer" data-cy="image-delete" @click="patchCard(activeCard, { image: null })">
+              <div
+                class="block font-normal underline cursor-pointer"
+                data-cy="image-delete"
+                @click="patchCard(activeCard, { image: null })"
+              >
                 <Cross class="inline-block mb-1 w-4" />Delete
               </div>
             </div>
           </div>
-          <Dropzone v-else :card="activeCard" />
+          <Dropzone
+            v-else
+            :card="activeCard"
+          />
         </div>
       </div>
-      <div class="grid col-span-2 gap-y-2 content-start">
+      <div class="flex flex-row-reverse gap-2 justify-between w-full sm:flex-col sm:justify-start sm:w-[220px]">
         <div class="grid self-end place-content-center place-self-end w-8 h-8 hover:bg-gray5 cursor-pointer">
           <Cross
             class="w-6 h-6 text-gray-600 fill-current"
@@ -141,25 +174,31 @@
             "
           />
         </div>
-        <div class="py-0.5 px-2 text-sm text-gray-600 bg-gray3 hover:bg-gray5 rounded-sm cursor-pointer" data-cy="calendar-button" @click="showDate = true">
-          <Clock class="inline-block mr-2 mb-0.5 w-4" />Due date
-        </div>
-        <div
-          class="py-0.5 px-2 text-sm text-gray-600 bg-gray3 hover:bg-gray5 rounded-sm cursor-pointer"
-          data-cy="copy-properties"
-          @click="copyProperties(activeCard)"
-        >
-          <Copy class="inline-block mr-2 mb-0.5 w-4" />Copy attributes
-        </div>
-        <div
-          class="py-0.5 px-2 text-sm text-gray-600 bg-gray3 hover:bg-gray5 rounded-sm cursor-pointer"
-          data-cy="card-detail-delete"
-          @click="
-            deleteCard(activeCard);
-            router.push(router.currentRoute.value.path);
-          "
-        >
-          <Trash class="inline-block mr-2 mb-0.5 w-4" />Delete card
+        <div class="flex gap-2 content-start sm:flex-col">
+          <div
+            class="flex gap-2 py-0.5 px-2 text-sm text-gray-600 bg-gray3 hover:bg-gray5 rounded-sm cursor-pointer"
+            data-cy="calendar-button"
+            @click="showDate = true"
+          >
+            <Clock class="inline-block mb-0.5 w-4" /><span class="hidden sm:block">Due date</span>
+          </div>
+          <div
+            class="flex gap-2 py-0.5 px-2 text-sm text-gray-600 bg-gray3 hover:bg-gray5 rounded-sm cursor-pointer"
+            data-cy="copy-properties"
+            @click="copyProperties(activeCard)"
+          >
+            <Copy class="inline-block  mb-0.5 w-4" /><span class="hidden sm:block">Copy attributes</span>
+          </div>
+          <div
+            class="flex gap-2 py-0.5 px-2 text-sm text-gray-600 bg-gray3 hover:bg-gray5 rounded-sm cursor-pointer"
+            data-cy="card-detail-delete"
+            @click="
+              deleteCard(activeCard);
+              router.push(router.currentRoute.value.path);
+            "
+          >
+            <Trash class="inline-block  mb-0.5 w-4" /><span class="hidden sm:block">Delete card</span>
+          </div>
         </div>
       </div>
     </div>
