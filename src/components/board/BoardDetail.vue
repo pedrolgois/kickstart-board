@@ -30,8 +30,8 @@
     <!-- BOARD DETAIL -->
     <div
       v-if="!state.loading && !state.loadingError.show"
-      class="overflow-hidden whitespace-nowrap board-detail"
-      data-cy="board-detail"
+      class="overflow-hidden whitespace-nowrap bg-blue6 board-detail"
+      data-cy="board-detail "
     >
       <div class="flex py-2.5">
         <div class="inline-block relative py-1.5 mr-0 ml-3 h-8">
@@ -66,13 +66,20 @@
         <BoardOptions :board="state.board" />
         <BoardFilter :filters="filters" />
       </div>
-      <div class="flex overflow-x-auto pr-4 h-full snap-x snap-mandatory sliding">
+      <div
+        ref="scrollContainer"
+        class="flex overflow-x-auto pr-4 h-full bg-blue6 snap-x snap-mandatory sliding scroll-container"
+        @mousedown="startScroll"
+        @mousemove="scroll"
+        @mouseup="endScroll"
+        @mouseleave="endScroll"
+      >
         <draggable
           v-model="state.lists"
           animation="150"
           group="lists"
           item-key="order"
-          class="inline-block"
+          class="flex items-start"
           @end="state.sortLists"
         >
           <template #item="{ element }">
@@ -98,7 +105,7 @@
 <script setup lang="ts">
 import { blurInput } from '@/utils/blurInput';
 import { selectInput } from '@/utils/selectInput';
-import { ref } from 'vue';
+import { ref, onMounted, Ref } from 'vue';
 import { useStore } from '@/store/store';
 import { useRoute } from 'vue-router';
 import BoardOptions from '@/components/board/BoardOptions.vue';
@@ -125,6 +132,32 @@ const filters = ref({
   overdue: false,
   completed: false,
 });
+
+const scrollContainer: Ref<HTMLElement | null> = ref(null);
+    const isDragging = ref(false);
+    const startX = ref(0);
+    const scrollLeft = ref(0);
+
+    const startScroll = (e: MouseEvent) => {
+      if (!scrollContainer.value) return;
+      isDragging.value = true;
+      startX.value = e.pageX - scrollContainer.value.offsetLeft;
+      scrollLeft.value = scrollContainer.value.scrollLeft;
+      document.body.style.cursor = 'grabbing'; // Change cursor style
+    };
+
+    const scroll = (e: MouseEvent) => {
+      if (!isDragging.value || !scrollContainer.value) return;
+      e.preventDefault();
+      const x = e.pageX - scrollContainer.value.offsetLeft;
+      const walk = (x - startX.value) * 2; // Adjust scroll speed
+      scrollContainer.value.scrollLeft = scrollLeft.value - walk;
+    };
+
+    const endScroll = () => {
+      isDragging.value = false;
+      document.body.style.cursor = 'default'; // Reset cursor style
+    };
 
 </script>
 
