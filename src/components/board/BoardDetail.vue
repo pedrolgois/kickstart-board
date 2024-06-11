@@ -79,12 +79,12 @@
           animation="150"
           group="lists"
           item-key="order"
-          class="flex items-start"
+          class="flex items-start item"
           @end="state.sortLists"
         >
           <template #item="{ element }">
             <div
-              class="inline-block align-top snap-center"
+              class="inline-block align-top snap-center item"
               data-cy="list-placeholder"
             >
               <ListItem
@@ -94,7 +94,7 @@
             </div>
           </template>
         </draggable>
-        <div class="inline  align-top snap-center -block">
+        <div class="inline  align-top snap-center -block item">
           <ListCreate :board="state.board.id" />
         </div>
       </div>
@@ -134,30 +134,37 @@ const filters = ref({
 });
 
 const scrollContainer: Ref<HTMLElement | null> = ref(null);
-    const isDragging = ref(false);
-    const startX = ref(0);
-    const scrollLeft = ref(0);
+const isDragging = ref(false);
+const startX = ref(0);
+const scrollLeft = ref(0);
 
-    const startScroll = (e: MouseEvent) => {
-      if (!scrollContainer.value) return;
-      isDragging.value = true;
-      startX.value = e.pageX - scrollContainer.value.offsetLeft;
-      scrollLeft.value = scrollContainer.value.scrollLeft;
-      document.body.style.cursor = 'grabbing'; // Change cursor style
-    };
+const startScroll = (e: MouseEvent) => {
+  if (!scrollContainer.value) return;
 
-    const scroll = (e: MouseEvent) => {
-      if (!isDragging.value || !scrollContainer.value) return;
-      e.preventDefault();
-      const x = e.pageX - scrollContainer.value.offsetLeft;
-      const walk = (x - startX.value) * 2; // Adjust scroll speed
-      scrollContainer.value.scrollLeft = scrollLeft.value - walk;
-    };
+  // Check if the click originated from an item inside the container
+  console.log(e.target)
+  if ((e.target as HTMLElement).classList.contains('item')) {
+    return;
+  }
 
-    const endScroll = () => {
-      isDragging.value = false;
-      document.body.style.cursor = 'default'; // Reset cursor style
-    };
+  isDragging.value = true;
+  startX.value = e.pageX - scrollContainer.value.offsetLeft;
+  scrollLeft.value = scrollContainer.value.scrollLeft;
+  document.body.style.cursor = 'grabbing'; // Change cursor style
+};
+
+const scroll = (e: MouseEvent) => {
+  if (!isDragging.value || !scrollContainer.value) return;
+  e.preventDefault();
+  const x = e.pageX - scrollContainer.value.offsetLeft;
+  const walk = (x - startX.value) * 2; // Adjust scroll speed
+  scrollContainer.value.scrollLeft = scrollLeft.value - walk;
+};
+
+const endScroll = () => {
+  isDragging.value = false;
+  document.body.style.cursor = 'default'; // Reset cursor style
+};
 
 </script>
 

@@ -1,27 +1,27 @@
 <template>
   <div
     data-cy="card"
-    class="grid relative p-2 my-1.5 w-full bg-white hover:bg-gray1 rounded border border-gray1 border-solid drop-shadow-sm cursor-pointer card"
+    class="grid relative p-2 my-1.5 w-full bg-white hover:bg-gray1 rounded border border-gray1 border-solid drop-shadow-sm cursor-pointer item card"
     :class="!card.completed && isOverdue(card.deadline) ? 'overdue' : 'text-gray9'"
     @click="showCardModule(card.id, true)"
   >
-    <div class="flex px-1.5 pl-0.5">
+    <div class="flex px-1.5 pl-0.5 item">
       <Checkbox :card="card" />
       <div
-        class="flex-grow pl-2 text-sm text-gray-800 select-none title"
+        class="flex-grow pl-2 text-sm text-gray-800 select-none title item"
         style="white-space: break-spaces"
         data-cy="card-text"
       >
         {{ card.name }}
       </div>
-      <Pen class="hidden absolute top-2 right-2 p-1 w-5 h-5 text-gray-700 bg-gray1 bg-opacity-60 pen" />
+      <Pen class="hidden absolute top-2 right-2 p-1 w-5 h-5 text-gray-700 bg-gray1 bg-opacity-60 pen item" />
     </div>
     <div
-      class="py-1 px-1.5 mt-1 w-[fit-content] text-xs rounded-sm due-date"
+      class="py-1 px-1.5 mt-1 w-[fit-content] text-xs rounded-sm due-date item"
       data-cy="due-date"
       :class="card.completed ? 'completed' : 'text-gray9'"
     >
-      <Clock class="inline-block w-4 h-4 fill-current" />
+      <Clock class="inline-block w-4 h-4 fill-current item" />
       <span class="ml-2">{{ new Date(card.deadline).toDateString().substring(4) }}</span>
     </div>
   </div>

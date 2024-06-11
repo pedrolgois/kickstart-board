@@ -1,14 +1,14 @@
 <template>
   <div
-    class="relative p-1.5 ml-3 w-list bg-gray2 rounded shadow-md"
+    class="relative p-1.5 ml-3 w-list bg-gray2 rounded shadow-md item"
     data-cy="list"
     @dragenter="isDragging = true"
     @dragleave="isDragging = false"
   >
-    <div class="flex mb-1">
+    <div class="flex mb-1 item">
       <input
         v-click-away="onClickAway"
-        class="inline-block flex-grow py-0.5 px-1 h-8 text-sm font-semibold text-gray-900 bg-gray2 focus:bg-gray1 rounded-sm border-2 border-transparent focus:border-blue6 outline-none cursor-pointer"
+        class="inline-block flex-grow py-0.5 px-1 h-8 text-sm font-semibold text-gray-900 bg-gray2 focus:bg-gray1 rounded-sm border-2 border-transparent focus:border-blue6 outline-none cursor-pointer item"
         data-cy="list-name"
         :value="list.name"
         @mouseup="
@@ -33,7 +33,7 @@
     >
       <div
         v-if="loadingListCards[list.id]"
-        class="block place-self-center text-xs text-center"
+        class="block place-self-center text-xs text-center item"
       >
         <LoadingIcon class="inline-block mb-1" />&nbsp;&nbsp;Loading cards ...
       </div>
