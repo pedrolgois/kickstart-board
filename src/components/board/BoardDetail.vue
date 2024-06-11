@@ -68,7 +68,7 @@
       </div>
       <div
         ref="scrollContainer"
-        class="flex overflow-x-auto pr-4 h-full bg-blue6 snap-x snap-mandatory sliding scroll-container"
+        class="flex overflow-x-auto pr-4 h-full bg-blue6 snap-x snap-mandatory sm:snap-none sliding scroll-container"
         @mousedown="startScroll"
         @mousemove="scroll"
         @mouseup="endScroll"
