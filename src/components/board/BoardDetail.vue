@@ -79,7 +79,7 @@
           animation="150"
           group="lists"
           item-key="order"
-          class="flex items-start item"
+          class="flex items-start "
           @end="state.sortLists"
         >
           <template #item="{ element }">
