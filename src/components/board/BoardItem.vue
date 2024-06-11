@@ -19,7 +19,7 @@
         v-show="showStar"
         data-cy="star"
         class="star"
-        @click.stop="patchBoard(board, { starred: !board.starred })"
+        @click.stop="putBoard(board, { starred: !board.starred })"
       >
         <Star
           class="col-span-1 w-5 h-5"
@@ -36,7 +36,7 @@ import Board from '@/typings/board';
 import Star from '@/assets/icons/star.svg';
 import { useStore } from '@/store/store';
 
-const { patchBoard } = useStore();
+const { putBoard } = useStore();
 defineProps({
   board: {
     default: null,

@@ -88,13 +88,13 @@ export const useStore = defineStore({
     createBoard,
     getBoardDetail,
     getBoardList,
-    patchBoard: putBoard,
+    putBoard,
     deleteBoard,
 
     // list actions
     createList,
     deleteList,
-    patchList: putList,
+    putList,
     sortLists,
 
     // card actions

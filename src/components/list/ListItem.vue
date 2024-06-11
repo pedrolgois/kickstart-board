@@ -48,6 +48,7 @@
         <template #item="{ element }">
           <CardItem
             v-if="doesCardMatchFilter(element)"
+            :key="element.order"
             :card="element"
           />
         </template>
@@ -124,12 +125,25 @@ const onClickAway = () => {
 const showCardCreate = (flag: boolean) => {
   cardCreate.value = flag;
 };
-const sortCards = () => {
-  // find list index of dragged card(s)
-  const listIndex = lists.value.find((l: List) => l.id === props.list.id);
-  // trigget PATCH request for every car that was dragged
-  lists.value[listIndex].cards.forEach((card: Card, order: Card['order']) => {
-    putCard(card, { listId: props.list.id, order });
-  });
+const sortCards = (event: any) => {
+  // Check if it was moved between lists
+  lists.value.forEach((list: List) => {
+    const movedCard = list.cards.find((card) => card.listId != list.id);
+    if(movedCard){
+      movedCard.listId = list.id;
+      putCard(movedCard, { listId: list.id });
+      return;
+    }
+  })
+
+  // Check if it was moved within the same list
+  if(event.moved?.element){
+    const list = lists.value.find((list: List) => list.id == event.moved.element.listId) as List;
+    list.cards.forEach((card, index) => {
+      card.order = index;
+      putCard(card, { order: index })
+    })
+  }
+
 };
 </script>

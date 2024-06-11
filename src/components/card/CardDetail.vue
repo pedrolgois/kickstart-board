@@ -59,7 +59,7 @@
 
             <div
               v-if="showDate"
-              class="absolute"
+              class="absolute z-10"
             >
               <Datepicker
                 v-model="date"
