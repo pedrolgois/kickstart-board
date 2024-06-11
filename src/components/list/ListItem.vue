@@ -1,5 +1,10 @@
 <template>
-  <div class="relative p-1.5 mb-32 ml-3 w-list bg-gray2 rounded shadow-md" data-cy="list" @dragenter="isDragging = true" @dragleave="isDragging = false">
+  <div
+    class="relative p-1.5 ml-3 w-list bg-gray2 rounded shadow-md"
+    data-cy="list"
+    @dragenter="isDragging = true"
+    @dragleave="isDragging = false"
+  >
     <div class="flex mb-1">
       <input
         v-click-away="onClickAway"
@@ -10,22 +15,41 @@
           selectInput($event);
           inputActive = true;
         "
-        @change="patchList(list, { name: inputValue($event) })"
+        @change="putList(list, { name: inputValue($event) })"
         @keyup.enter="
           blurInput($event);
           inputActive = false;
         "
         @blur="inputActive = false"
+      >
+      <ListOptions
+        :list="list"
+        @toggle-input="showCardCreate"
       />
-      <ListOptions :list="list" @toggle-input="showCardCreate" />
     </div>
-    <div data-cy="card-list" :class="isDragging ?? 'min-h-[100px]'">
-      <div v-if="loadingListCards[list.id]" class="block place-self-center text-xs text-center">
+    <div
+      data-cy="card-list"
+      :class="isDragging ?? 'min-h-[100px]'"
+    >
+      <div
+        v-if="loadingListCards[list.id]"
+        class="block place-self-center text-xs text-center"
+      >
         <LoadingIcon class="inline-block mb-1" />&nbsp;&nbsp;Loading cards ...
       </div>
-      <draggable :list="list.cards" animation="150" group="cards" ghost-class="bg-gray2" :item-key="list.name" @change="sortCards">
+      <draggable
+        :list="list.cards"
+        animation="150"
+        group="cards"
+        ghost-class="bg-gray2"
+        :item-key="list.name"
+        @change="sortCards"
+      >
         <template #item="{ element }">
-          <CardItem :card="element" />
+          <CardItem
+            v-if="doesCardMatchFilter(element)"
+            :card="element"
+          />
         </template>
       </draggable>
       <div
@@ -36,13 +60,17 @@
       >
         <Plus class="inline-block w-3 h-3" />Add another card
       </div>
-      <CardCreateInput v-else :list="list" @toggle-input="showCardCreate" />
+      <CardCreateInput
+        v-else
+        :list="list"
+        @toggle-input="showCardCreate"
+      />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { PropType, ref } from 'vue';
 import { blurInput } from '@/utils/blurInput';
 import { inputValue } from '@/utils/inputValue';
 import { selectInput } from '@/utils/selectInput';
@@ -56,17 +84,39 @@ import Plus from '@/assets/icons/plus.svg';
 import draggable from 'vuedraggable';
 import LoadingIcon from '@/assets/icons/loadingIcon.svg';
 import { storeToRefs } from 'pinia';
+import Filter from '@/typings/filters';
+import moment from 'moment';
 
-const props = defineProps<{
-  list: List;
-}>();
+const props = defineProps({
+  list: {
+    type: Object as PropType<List>,
+    required: true,
+  },
+  filters: {
+    type: Object as PropType<Filter>,
+    required: true,
+  },
+});
+
+function doesCardMatchFilter(card: Card){
+  const matchesKeyword = props.filters.keyword == '' ||
+    card.name.toLowerCase().includes(props.filters.keyword.toLowerCase())
+
+  const matchesDueDate = moment(props.filters.duedate).isSame(moment(), 'day') || moment(props.filters.duedate).isBefore(card.deadline, 'day')
+
+  const matchesOverdueOrCompleted = (props.filters.overdue && moment(card.deadline).isBefore(moment(), 'day')) || (props.filters.completed && card.completed);
+
+  const showCard = (props.filters.overdue || props.filters.completed) && matchesOverdueOrCompleted || (!props.filters.overdue && !props.filters.completed);
+
+  return matchesKeyword && matchesDueDate && showCard;
+}
 
 const cardCreate = ref(false);
 const inputActive = ref(false);
 const isDragging = ref(false);
 
 const { lists, loadingListCards } = storeToRefs(useStore());
-const { putCard, patchList } = useStore();
+const { putCard, putList } = useStore();
 
 const onClickAway = () => {
   inputActive.value = false;

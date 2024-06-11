@@ -1,7 +1,7 @@
 <template>
   <div
     v-click-away="onClickAway"
-    class="absolute top-11 left-2 z-10 py-2 w-dropdown bg-white rounded-sm shadow-xl"
+    class="absolute top-10 left-0 z-10 p-2 py-2 w-dropdown bg-white rounded-sm shadow-xl"
   >
     <div class="mt-0.5 h-7 text-sm text-center text-gray-600">
       {{ header }}

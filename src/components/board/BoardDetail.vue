@@ -30,10 +30,10 @@
     <!-- BOARD DETAIL -->
     <div
       v-if="!state.loading && !state.loadingError.show"
-      class="overflow-x-auto whitespace-nowrap board-detail"
+      class="overflow-hidden whitespace-nowrap board-detail"
       data-cy="board-detail"
     >
-      <div class="py-2.5">
+      <div class="flex py-2.5">
         <div class="inline-block relative py-1.5 mr-0 ml-3 h-8">
           <div class="inline-block invisible px-3 font-bold">
             {{ state.board.name }}
@@ -46,7 +46,7 @@
             autocomplete="off"
             name="board-title"
             @focus="selectInput($event)"
-            @change="state.patchBoard(state.board, { name: state.board.name })"
+            @change="state.putBoard(state.board, { name: state.board.name })"
             @keyup.enter="blurInput($event)"
             @keyup.esc="blurInput($event)"
           >
@@ -56,7 +56,7 @@
           :class="[state.board.starred ? 'fill-current text-yellow-300' : 'stroke-current text-white']"
           data-cy="star"
           @click="
-            state.patchBoard(state.board, {
+            state.putBoard(state.board, {
               starred: !state.board.starred,
             })
           "
@@ -64,26 +64,32 @@
           <Star class="place-self-center m-2" />
         </div>
         <BoardOptions :board="state.board" />
+        <BoardFilter :filters="filters" />
       </div>
-      <draggable
-        v-model="state.lists"
-        animation="150"
-        group="lists"
-        item-key="order"
-        class="inline-block"
-        @end="state.sortLists"
-      >
-        <template #item="{ element }">
-          <div
-            class="inline-block align-top"
-            data-cy="list-placeholder"
-          >
-            <ListItem :list="element" />
-          </div>
-        </template>
-      </draggable>
-      <div class="inline-block align-top">
-        <ListCreate :board="state.board.id" />
+      <div class="flex overflow-x-auto pr-4 h-full snap-x snap-mandatory sliding">
+        <draggable
+          v-model="state.lists"
+          animation="150"
+          group="lists"
+          item-key="order"
+          class="inline-block"
+          @end="state.sortLists"
+        >
+          <template #item="{ element }">
+            <div
+              class="inline-block align-top snap-center"
+              data-cy="list-placeholder"
+            >
+              <ListItem
+                :list="element"
+                :filters="filters"
+              />
+            </div>
+          </template>
+        </draggable>
+        <div class="inline  align-top snap-center -block">
+          <ListCreate :board="state.board.id" />
+        </div>
       </div>
     </div>
   </div>
@@ -91,11 +97,12 @@
 
 <script setup lang="ts">
 import { blurInput } from '@/utils/blurInput';
-import { ref } from 'vue';
 import { selectInput } from '@/utils/selectInput';
+import { ref } from 'vue';
 import { useStore } from '@/store/store';
 import { useRoute } from 'vue-router';
 import BoardOptions from '@/components/board/BoardOptions.vue';
+import BoardFilter from '@/components/board/BoardFilter.vue';
 import ListCreate from '@/components/list/ListCreate.vue';
 import ListItem from '@/components/list/ListItem.vue';
 import LoadingIcon from '@/assets/icons/loadingIcon.svg';
@@ -107,10 +114,20 @@ const state = useStore();
 const inputActive = ref(false);
 const boardId = Number(route.params.board);
 state.getBoardDetail(boardId);
+
 const onClickAway = () => {
   inputActive.value = false;
 };
+
+const filters = ref({
+  keyword: '',
+  duedate: new Date(),
+  overdue: false,
+  completed: false,
+});
+
 </script>
+
 
 <style lang="postcss" scoped>
 .board-detail {
